@@ -1,0 +1,10 @@
+# NLP 镜像构建上下文排除项（模型产物不入镜像：生产经卷挂载 + 平台训练产出）
+app/models
+app/data/*.csv
+app/data/*.jsonl
+.pytest_cache
+.ruff_cache
+__pycache__
+**/__pycache__
+tests
+.env

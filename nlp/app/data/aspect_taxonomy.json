@@ -1,0 +1,14 @@
+{
+  "电池续航": { "keywords": ["battery life", "battery", "续航", "电池", "电量", "充电一次"] },
+  "充电速度": { "keywords": ["charging speed", "charge fast", "快充", "充电速度", "慢充"] },
+  "屏幕显示": { "keywords": ["screen", "display", "屏幕", "显示", "分辨率", "色彩"] },
+  "性能速度": { "keywords": ["performance", "fast", "slow", "性能", "卡顿", "流畅"] },
+  "音质": { "keywords": ["sound", "audio", "音质", "噪音", "声音", "扬声器"] },
+  "外观设计": { "keywords": ["design", "appearance", "外观", "设计", "颜值", "做工"] },
+  "包装": { "keywords": ["packaging", "package", "包装", "破损", "盒子"] },
+  "售后服务": { "keywords": ["customer service", "warranty", "售后", "客服", "退换", "维修"] },
+  "价格价值": { "keywords": ["price", "value", "价格", "性价比", "贵", "划算"] },
+  "物流配送": { "keywords": ["delivery", "shipping", "物流", "快递", "发货", "配送"] },
+  "可靠性": { "keywords": ["quality", "durable", "broke", "质量", "故障", "坏", "耐用"] },
+  "安全性": { "keywords": ["safe", "hot", "安全", "发热", "起火", "烫"] }
+}

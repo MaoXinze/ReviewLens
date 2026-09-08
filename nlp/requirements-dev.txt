@@ -1,0 +1,5 @@
+# NLP 服务开发 / 测试依赖
+-r requirements.txt
+pytest>=8.2.0
+httpx>=0.27.0
+ruff>=0.4.0

@@ -1,0 +1,175 @@
+# ReviewLens 生产部署编排（全服务容器化）
+#
+# 用法：
+#   export JWT_SECRET_KEY=$(python -c "import secrets;print(secrets.token_urlsafe(48))")
+#   export DB_PASSWORD=xxx MINIO_ROOT_PASSWORD=xxx
+#   docker compose -f docker/docker-compose.prod.yml up -d --build
+#
+# 说明：
+#   - bootstrap 服务先执行迁移 + ES 索引 + 管理员 seeding，完成后 backend 才启动
+#   - 管理员随机密码打印在 `docker compose logs bootstrap` 中
+#   - 前端经 nginx 同源反代 /api，浏览器只见 80 端口
+name: reviewlens-prod
+
+services:
+  # ---------- 数据层 ----------
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: reviewlens
+      POSTGRES_USER: reviewlens
+      POSTGRES_PASSWORD: "${DB_PASSWORD:?请设置 DB_PASSWORD}"
+    volumes:
+      - reviewlens_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reviewlens -d reviewlens"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+      args:
+        IK_VERSION: "${IK_VERSION:-8.15.0}"
+    image: reviewlens/elasticsearch:8.15.0
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "${ES_JAVA_OPTS:--Xms1g -Xmx1g}"
+    volumes:
+      - reviewlens_esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  redis:
+    image: redis:7.2
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - reviewlens_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:RELEASE.2025-06-13T11-33-47Z-cpuv1
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-reviewlens_admin}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:?请设置 MINIO_ROOT_PASSWORD}"
+    volumes:
+      - reviewlens_miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ---------- NLP 推理服务 ----------
+  nlp:
+    build:
+      context: ../nlp
+    image: reviewlens/nlp:latest
+    restart: unless-stopped
+    volumes:
+      - reviewlens_nlpmodels:/srv/app/app/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8100/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # ---------- 一次性引导：迁移 + ES 索引 + 管理员 ----------
+  bootstrap:
+    build:
+      context: ../backend
+    image: reviewlens/backend:latest
+    command: ["python", "bootstrap.py"]
+    restart: "no"
+    environment: &backend_env
+      DATABASE_URL: "postgresql+asyncpg://reviewlens:${DB_PASSWORD}@postgres:5432/reviewlens"
+      ELASTICSEARCH_HOST: "http://elasticsearch:9200"
+      REDIS_URL: "redis://redis:6379/0"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "${MINIO_ROOT_USER:-reviewlens_admin}"
+      MINIO_SECRET_KEY: "${MINIO_ROOT_PASSWORD}"
+      JWT_SECRET_KEY: "${JWT_SECRET_KEY:?请设置 JWT_SECRET_KEY}"
+      NLP_BASE_URL: "http://nlp:8100"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@reviewlens.dev}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  # ---------- 应用层 ----------
+  backend:
+    image: reviewlens/backend:latest
+    build:
+      context: ../backend
+    restart: unless-stopped
+    environment: *backend_env
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+      nlp:
+        condition: service_started
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  worker:
+    image: reviewlens/backend:latest
+    build:
+      context: ../backend
+    command: ["python", "-m", "app.worker"]
+    restart: unless-stopped
+    environment: *backend_env
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+    image: reviewlens/frontend:latest
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+
+volumes:
+  reviewlens_pgdata:
+  reviewlens_esdata:
+  reviewlens_redisdata:
+  reviewlens_miniodata:
+  reviewlens_nlpmodels:
+
+networks:
+  default:
+    name: reviewlens-prod-net

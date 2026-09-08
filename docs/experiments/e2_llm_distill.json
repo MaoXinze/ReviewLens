@@ -1,0 +1,37 @@
+{
+  "experiment": "M11_e2_llm_distill",
+  "model": "distilbert-base-uncased",
+  "n": 5000,
+  "train_idx": [
+    0,
+    4000
+  ],
+  "test_idx": [
+    4000,
+    5000
+  ],
+  "label_disagreement_rate": 0.1286,
+  "results": [
+    {
+      "source": "weak",
+      "macro_f1": 0.595304,
+      "accuracy": 0.906,
+      "train_seconds": 45.483,
+      "device": "cuda",
+      "train_samples": 4000,
+      "test_samples": 1000,
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_e2_llm_labels_q37_plus_weak"
+    },
+    {
+      "source": "llm",
+      "macro_f1": 0.800741,
+      "accuracy": 0.894,
+      "train_seconds": 44.608,
+      "device": "cuda",
+      "train_samples": 4000,
+      "test_samples": 1000,
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_e2_llm_labels_q37_plus_llm"
+    }
+  ],
+  "created_at": "2026-09-06T12:30:33.444104+00:00"
+}

@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: reviewlens_test
+          POSTGRES_USER: reviewlens
+          POSTGRES_PASSWORD: reviewlens
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U reviewlens" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7.2
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend deps
+        run: |
+          pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+          pip install -r nlp/requirements.txt
+      - name: Lint (ruff)
+        run: |
+          cd backend && ruff check .
+          cd nlp && ruff check .
+      - name: Backend tests
+        run: cd backend && pytest
+      - name: NLP tests
+        run: cd nlp && pytest
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install frontend deps
+        run: cd frontend && npm ci
+      - name: Type check
+        run: cd frontend && npx tsc --noEmit
+      - name: Lint
+        run: cd frontend && npm run lint
+      - name: Build
+        run: cd frontend && npm run build
+      - name: Test
+        run: cd frontend && npm test

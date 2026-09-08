@@ -1,0 +1,9 @@
+# ReviewLens 后端 ruff 配置
+extend-exclude = [".venv", "alembic", "tests/reviewlens_old"]
+
+[lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+# B008: FastAPI 依赖注入 `Depends()` 在参数默认值中是标准用法，豁免。
+# 豁免范围限定在 api/ 路由与依赖层。
+[lint.per-file-ignores]
+"app/api/**" = ["B008"]

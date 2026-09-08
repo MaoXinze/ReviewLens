@@ -1,0 +1,8 @@
+# 后端镜像构建上下文排除项
+.pytest_cache
+.ruff_cache
+__pycache__
+**/__pycache__
+tests
+.coverage
+.env

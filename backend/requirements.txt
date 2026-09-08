@@ -1,0 +1,33 @@
+# ReviewLens 后端 Python 依赖
+# Web 框架
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+
+# ORM + 迁移
+sqlalchemy[asyncio]>=2.0.30
+asyncpg>=0.29.0
+alembic>=1.13.0
+
+# 认证
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1  # 固定版本，passlib 1.7.4 与 bcrypt>=4.1 不兼容
+
+# 配置
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+email-validator>=2.1.0
+
+# 异步任务（Redis + ARQ）
+arq>=0.25.0
+redis>=5.0.0
+
+# 对象存储
+minio>=7.2.0
+
+# Elasticsearch（客户端版本与 ES 8.15 服务器兼容，勿升到 9.x）
+elasticsearch[async]>=8.14.0,<9.0.0
+
+# HTTP 客户端（调用 NLP 服务）
+httpx>=0.27.0

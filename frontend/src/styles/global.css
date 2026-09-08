@@ -1,0 +1,211 @@
+/* ============================================================
+   ReviewLens · 清新明亮简约主题（对标大厂 Ant Design 浅色风格）
+   白底浅灰、AntD 蓝主色、轻边框细阴影、克制的品牌渐变
+   ============================================================ */
+
+:root {
+  /* 品牌渐变（仅用于标题文字 / 主按钮等少量强调处） */
+  --rl-grad: linear-gradient(135deg, #4096ff 0%, #1677ff 60%, #722ed1 130%);
+  --rl-grad-text: linear-gradient(120deg, #1677ff, #5b8ff9 55%, #722ed1);
+  --rl-glow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --rl-glow-cyan: 0 2px 12px rgba(22, 119, 255, 0.15);
+
+  /* 色板 */
+  --rl-bg: #f5f7fa;
+  --rl-bg-deep: #eef2f7;
+  --rl-bg-soft: #ffffff;
+  --rl-surface: #ffffff;
+  --rl-surface-hover: #f5f5f5;
+  --rl-border: #e5e7eb;
+  --rl-border-glow: #91caff;
+  --rl-text: #1f2329;
+  --rl-text-secondary: #51565d;
+  --rl-text-faint: #8a9099;
+  --rl-primary: #1677ff;
+  --rl-cyan: #1677ff;
+  --rl-purple: #722ed1;
+
+  --rl-radius: 10px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--rl-bg);
+  color: var(--rl-text);
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ---------- 背景：干净的浅灰底 + 顶部一线蓝色氛围 ---------- */
+.rl-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(1000px 420px at 18% -6%, rgba(22, 119, 255, 0.05), transparent 60%),
+    radial-gradient(900px 420px at 85% -4%, rgba(114, 46, 209, 0.04), transparent 60%),
+    var(--rl-bg);
+}
+
+/* ---------- 卡片：白底 + 细边框 + 轻阴影 ---------- */
+.glass-card {
+  background: #ffffff;
+  border: 1px solid var(--rl-border) !important;
+  border-radius: var(--rl-radius) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.glass-card:hover {
+  border-color: var(--rl-border-glow) !important;
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.1);
+}
+
+/* 强调卡片（浅蓝底，用于特殊区块） */
+.gradient-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--rl-radius) !important;
+  border: 1px solid #d6e8ff !important;
+  background: linear-gradient(150deg, #f0f7ff, #ffffff 70%);
+}
+
+/* ---------- 主按钮：AntD 蓝实底 ---------- */
+.gradient-btn {
+  border: none !important;
+  background: var(--rl-primary) !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(22, 119, 255, 0.3);
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease !important;
+}
+.gradient-btn:hover {
+  background: #4096ff !important;
+  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+/* ---------- 渐变文字 ---------- */
+.grad-text {
+  background: var(--rl-grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---------- 页面入场动画（AppLayout 的 .page-fade 包裹 Outlet） ---------- */
+@keyframes rl-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-fade {
+  animation: rl-page-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-fade {
+    animation: none;
+  }
+}
+
+/* ---------- 统计卡（图标 + 标签 + 大数值，悬停浮起） ---------- */
+.stat-card {
+  padding: 14px 18px;
+  border-radius: var(--rl-radius);
+  background: #ffffff;
+  border: 1px solid var(--rl-border);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--rl-border-glow);
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.1);
+}
+.stat-card .stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rl-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stat-card .stat-value {
+  margin-top: 4px;
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+}
+
+/* ---------- 自定义滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- antd 浅色微调 ---------- */
+.ant-card {
+  background: #ffffff;
+  border: 1px solid var(--rl-border);
+}
+.ant-card-head {
+  border-bottom: 1px solid var(--rl-border) !important;
+}
+.ant-card-head-title {
+  font-weight: 600 !important;
+}
+.ant-statistic-title {
+  color: var(--rl-text-secondary) !important;
+}
+.ant-statistic-content {
+  color: var(--rl-text) !important;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ant-table {
+  background: transparent !important;
+}
+.ant-table-thead > tr > th {
+  background: #fafafa !important;
+  color: var(--rl-text-secondary) !important;
+  font-weight: 600 !important;
+}
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+.ant-table-tbody > tr:hover > td {
+  background: #f0f7ff !important;
+}
+.ant-descriptions-item-label {
+  color: var(--rl-text-secondary) !important;
+}
+
+/* ---------- 键盘可达性 ---------- */
+:focus-visible {
+  outline: 2px solid #91caff;
+  outline-offset: 1px;
+}

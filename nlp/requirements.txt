@@ -1,0 +1,20 @@
+# ReviewLens NLP 服务依赖
+# Web 框架
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# 机器学习（基线 P2）
+scikit-learn>=1.5.0
+joblib>=1.4.0
+
+# 中文分词
+jieba>=0.42.1
+
+# 进阶 BERT 微调（P7，DistilBERT 微调，GPU 优先）
+# torch==2.13.0+cu130 为本地 CUDA 版（来自本机 wheels/torch-...cu130-cp312-win_amd64.whl），
+# 无本地 wheel 时可直接 pip 安装 CPU 版：torch>=2.3.0,<2.7.0
+torch==2.13.0+cu130
+transformers>=4.44.0,<4.50.0
+accelerate>=0.34.0,<1.0.0
+huggingface_hub>=0.25.0,<1.0.0
+tokenizers>=0.20.0,<0.22.0

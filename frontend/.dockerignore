@@ -1,0 +1,9 @@
+# 前端构建上下文排除项（关键：不得用宿主机 node_modules 覆盖容器内安装）
+node_modules
+dist
+coverage
+*.tsbuildinfo
+.env
+.env.local
+.eslintrc.cjs
+_g2check.cjs

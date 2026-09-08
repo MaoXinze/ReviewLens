@@ -1,0 +1,8 @@
+# ReviewLens NLP 推理服务精简依赖（Docker 镜像用）
+# 基线 TF-IDF+LR 推理 + 规则属性抽取足够服务看板全链路；
+# 需要 DistilBERT 训练/级联复核时改用完整 requirements.txt（含 torch/transformers）。
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+scikit-learn>=1.5.0
+joblib>=1.4.0
+jieba>=0.42.1

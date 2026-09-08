@@ -1,0 +1,125 @@
+{
+  "experiment": "M11_distilbert_sample_size",
+  "base_model": "distilbert-base-uncased",
+  "seed": 42,
+  "weak_label_rule": "rating<=2 negative, ==3 neutral, >=4 positive",
+  "results": [
+    {
+      "size": 1000,
+      "actual_samples": 1000,
+      "macro_f1": 0.568208,
+      "accuracy": 0.87,
+      "train_seconds": 8.977,
+      "device": "cuda",
+      "train_samples": 800,
+      "test_samples": 200,
+      "per_class": {
+        "0": {
+          "precision": 0.822222,
+          "recall": 0.74,
+          "f1": 0.778947
+        },
+        "1": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "2": {
+          "precision": 0.883871,
+          "recall": 0.971631,
+          "f1": 0.925676
+        }
+      },
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_exp_1000",
+      "trained_at": "2026-09-03T08:53:18.146731+00:00"
+    },
+    {
+      "size": 5000,
+      "actual_samples": 5000,
+      "macro_f1": 0.587575,
+      "accuracy": 0.886,
+      "train_seconds": 43.268,
+      "device": "cuda",
+      "train_samples": 4000,
+      "test_samples": 1000,
+      "per_class": {
+        "0": {
+          "precision": 0.746753,
+          "recall": 0.916335,
+          "f1": 0.822898
+        },
+        "1": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "2": {
+          "precision": 0.950725,
+          "recall": 0.929178,
+          "f1": 0.939828
+        }
+      },
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_exp_5000",
+      "trained_at": "2026-09-03T08:54:04.516929+00:00"
+    },
+    {
+      "size": 20000,
+      "actual_samples": 20000,
+      "macro_f1": 0.678596,
+      "accuracy": 0.9045,
+      "train_seconds": 176.304,
+      "device": "cuda",
+      "train_samples": 16000,
+      "test_samples": 4000,
+      "per_class": {
+        "0": {
+          "precision": 0.816827,
+          "recall": 0.920039,
+          "f1": 0.865367
+        },
+        "1": {
+          "precision": 0.383562,
+          "recall": 0.153846,
+          "f1": 0.219608
+        },
+        "2": {
+          "precision": 0.954056,
+          "recall": 0.947594,
+          "f1": 0.950814
+        }
+      },
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_exp_20000",
+      "trained_at": "2026-09-03T08:57:11.674410+00:00"
+    },
+    {
+      "size": 29904,
+      "actual_samples": 29904,
+      "macro_f1": 0.646801,
+      "accuracy": 0.904865,
+      "train_seconds": 266.041,
+      "device": "cuda",
+      "train_samples": 23923,
+      "test_samples": 5981,
+      "per_class": {
+        "0": {
+          "precision": 0.842005,
+          "recall": 0.875908,
+          "f1": 0.858622
+        },
+        "1": {
+          "precision": 0.403846,
+          "recall": 0.078358,
+          "f1": 0.13125
+        },
+        "2": {
+          "precision": 0.933609,
+          "recall": 0.96808,
+          "f1": 0.950532
+        }
+      },
+      "model_path": "D:\\code_space\\work_space\\codex\\codex-02\\sentiment-plus\\nlp\\app\\models\\distilbert_exp_29904",
+      "trained_at": "2026-09-03T09:01:55.645335+00:00"
+    }
+  ],
+  "created_at": "2026-09-03T09:06:54.706994+00:00"
+}
